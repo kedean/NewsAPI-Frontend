@@ -1,0 +1,30 @@
+<div id="story-list-container" class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+      <a href="#/new-story">Submit A Story</a><br />
+      <span>You have {{pendingCount}} pending submissions.</span>
+      <h3>Recent Stories</h3>
+    </div>
+  </div>
+
+  <!-- component template -->
+  <script type="text/x-template" id="grid-template">
+    <div class="row">
+      <div v-for="story in data | orderBy 'details.metadata.publishTime' -1" class="col-md-2 pane">
+        <a href="{{story.details.link}}">
+          {{story.details.headline}}<br />
+          <img v-bind:src="api + 'previews/' + story.id" />
+        </a>
+      </div>
+      <div v-show="data.length == 0" class="col-md-12">
+        No recent stories to show!
+      </div>
+    </div>
+  </script>
+
+  <story-grid
+    :data="gridData"
+    :columns="gridColumns"
+    :api="apiURI">
+  </story-grid>
+</div>

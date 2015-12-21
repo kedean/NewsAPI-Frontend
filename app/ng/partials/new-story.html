@@ -1,0 +1,29 @@
+<div class="container">
+  <a ui-sref="stories">&lt;&lt; Back</a>
+  <h3>New Story</h3>
+  <form ng-submit="putStory()">
+    <div class="row form-row">
+      <div class="col-md-1">
+        <label for="newStory_headline">Headline:</label>
+      </div>
+      <div class="col-md-11">
+        <input type="text" id="newStory_headline" name="headline" ng-model="headline" required />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-1">
+        <label for="newStory_link">Link:</label>
+      </div>
+      <div class="col-md-11">
+        <input type="text" id="newStory_link" name="link" ng-model="link" required />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-12">
+        <input id="newStory_submit" type="submit" value="Post Story" />
+      </div>
+    </div>
+  </form>
+</div>

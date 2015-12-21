@@ -1,0 +1,21 @@
+{
+  "name": "news-api-angular",
+  "description": "Angular based frontend for News API",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "1.4.x",
+    "angular-mocks": "1.4.x",
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.1.1",
+    "bootstrap-css-only": "~3.1.1",
+    "angular-ui-router": "x.x.x",
+    "angular-resource": "1.4.x",
+    "toastr": "x.x.x",
+    "humane": "x.x.x",
+    "aja": "x.x.x",
+    "vue": "x.x.x",
+    "director": "x.x.x"
+  }
+}

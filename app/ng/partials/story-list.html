@@ -1,0 +1,18 @@
+<div>
+  <a ui-sref="new-story" ng-show="showSubmissionLink">Submit A Story</a>
+  <h3>Recent Stories <span ng-show="pendingCount > 0"> - {{pendingCount}} pending</span></h3>
+  <span>Sort By:</span>
+  <select ng-model="sortOrder">
+    <option value="-details.metadata.publishTime">Newest</option>
+    <option value="details.metadata.publishTime">Oldest</option>
+  </select>
+</div>
+
+<div class="story-grid">
+  <div ng-repeat="story in stories | orderBy:sortOrder track by story.id" class="pane">
+      <a href="{{story.details.link}}">
+        {{story.details.headline}}<br />
+        <img ng-src="{{apiURI}}previews/{{story.id}}" />
+      </a>
+  </div>
+</div>

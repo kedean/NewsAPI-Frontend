@@ -1,0 +1,57 @@
+/* app css stylesheet */
+
+body {
+}
+
+.pane {
+  padding:0;
+  margin:0 1em 0 0;
+  display:inline-block;
+}
+.pane img{
+  width:300px;
+  height:169px;
+}
+.pane a{
+  padding:.5em 1em 1em;
+  border:1px solid transparent;
+  text-align:center;
+  display:block;
+}
+.pane a:hover, .pane a:active, .pane a:focus{
+  border:1px solid #000;
+  background:#ccc;
+  text-decoration:none;
+}
+
+.story-grid{
+  margin-top:2em;
+}
+
+.form-row{
+  margin:1em 0;
+}
+
+/* view panes */
+
+.panel-sidebar:not(:empty), .panel-content{
+  padding-top:1em;
+}
+
+.panel-sidebar:not(:empty){
+  border-right:1px solid black;
+  margin:0 1em 0 0;
+  width:362px;
+  float:left;
+  height:100vh;
+  overflow-y:scroll;
+}
+.panel-content{
+  float:left;
+}
+
+/* Other */
+
+a.ng-hide + h3{
+  margin-top:0;
+}
