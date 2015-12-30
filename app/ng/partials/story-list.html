@@ -12,7 +12,7 @@
   <div ng-repeat="story in stories | orderBy:sortOrder track by story.id" class="pane">
       <a href="{{story.details.link}}">
         {{story.details.headline}}<br />
-        <img ng-src="{{apiURI}}previews/{{story.id}}" />
+        <img ng-src="{{story._links.preview}}" />
       </a>
   </div>
 </div>

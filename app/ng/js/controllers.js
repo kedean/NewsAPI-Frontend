@@ -7,8 +7,8 @@ var kedControllers = angular.module('kedControllers', []);
 /*
  * New Story form
  */
-kedControllers.controller('NewStoryCtrl', ['$scope', '$location', 'pendingSubmissions', 'Story',
-  function($scope, $location, pendingSubmissions, Story) {
+kedControllers.controller('NewStoryCtrl', ['$scope', '$location', 'pendingSubmissions', 'PendingStory',
+  function($scope, $location, pendingSubmissions, PendingStory) {
     var putSuccessHandler = function(response){
       pendingSubmissions.add(response.id);
       $location.url("/stories");
@@ -22,7 +22,7 @@ kedControllers.controller('NewStoryCtrl', ['$scope', '$location', 'pendingSubmis
     }
 
     $scope.putStory = function(){
-      var story = new Story();
+      var story = new PendingStory();
       story.headline = $scope.headline;
       story.link = $scope.link;
       story.$save(putSuccessHandler, putErrorHandler);
@@ -34,19 +34,20 @@ var z;
 /*
  * Main listing of all stories
  */
-kedControllers.controller('StoryListCtrl', ['$scope', '$state', '$interval', '$timeout', 'pendingSubmissions', 'Story', 'apiPath',
-  function($scope, $state, $interval, $timeout, pendingSubmissions, Story, apiPath) {
+kedControllers.controller('StoryListCtrl', ['$scope', '$state', '$interval', '$timeout', 'pendingSubmissions', 'PublishedStory', 'apiPath',
+  function($scope, $state, $interval, $timeout, pendingSubmissions, PublishedStory, apiPath) {
     $scope.showSubmissionLink = $state.is("stories");
     $scope.apiURI = apiPath.makeUrl('');
-    $scope.stories = Story.query();
+    $scope.stories = [];
 
     var refreshPeriod = 10000; // 10 seconds
     var refreshList = function(){
-      Story.query(function(newStories){
-        Utils.mergeArrays(newStories, $scope.stories, function(a, b){ return a.id == b.id; });
+      PublishedStory.query(function(newStories){
+        Utils.mergeArrays(newStories._embedded.stories, $scope.stories, function(a, b){ return a.id == b.id; });
       });
     };
 
+    refreshList();
     $interval(refreshList, refreshPeriod);
 
     $scope.pendingCount = 0;

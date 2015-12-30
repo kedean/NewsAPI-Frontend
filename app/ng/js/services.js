@@ -12,16 +12,25 @@ kedServices.service('apiPath', ['$location',
   }
 ]);
 
-kedServices.factory('Story', ['$resource', 'apiPath',
+kedServices.factory('PublishedStory', ['$resource', 'apiPath',
   function($resource, apiPath){
-    return $resource(apiPath.makeUrl('stories/:id'), {id:'@id'}, {
-
+    return $resource(apiPath.makeUrl('stories/published/:id'), {id:'@id'}, {
+      'query': {isArray:false}
     });
   }
 ]);
 
-kedServices.service('pendingSubmissions', ['Story',
-  function(Story){
+kedServices.factory('PendingStory', ['$resource', 'apiPath',
+  function($resource, apiPath){
+    return $resource(apiPath.makeUrl('stories/pending/:id'), {id:'@id'}, {
+      'status': {method: 'HEAD'},
+      'query': {isArray:false}
+    });
+  }
+]);
+
+kedServices.service('pendingSubmissions', ['PendingStory', '$http', 'apiPath',
+  function(PendingStory, $http, apiPath){
     var stories = [];
     var pendingCount = 0;
 
@@ -45,25 +54,32 @@ kedServices.service('pendingSubmissions', ['Story',
       stories = [];
 
       var promises = snapshot.forEach(function(id){
-        (new Story({id:id})).$get().then(
-          function(successResponse){
-            if(successResponse.status == 'PENDING'){ //this story hasn't been published, put it back
+        $http.head(apiPath.makeUrl('stories/pending/' + id)).then(function(response){
+            if(response.status == 202){ //this story hasn't been published, put it back
               stories.push(id);
-            } else { //the story has been processed one way or another, decrement our counter and leave it off the list
+            } else if(response.status == 200){ //the story has been processed one way or another, decrement our counter and leave it off the list
               pendingCount--;
-
-              if(successResponse.status == 'PUBLISHED'){
-                toastr.success("Story Processed: '" + successResponse.details.headline + "'");
-              }
+              console.log(response);
+              $http.get(response.config.url).then(function(story){
+                toastr.success("Story Processed: '" + story.data.details.headline + "'");
+              }, function(e){
+                toastr.error("An unknown error occurred!");
+                console.trace("Response failed, but should have succeeded", e);
+              });
             }
-          }, function(errorResponse){
-            if(errorResponse.status == 404 && errorResponse.data.status == 'REJECTED'){ //the story was rejected and now gives back a 404 response
+          }, function(error){
+            if(error.status == 422){ //the story was rejected and now gives back a 422 UNPROCESSABLE ENTITY response
               pendingCount--;
-              toastr.error("Story was rejected due to " + errorResponse.data.details.note.toLowerCase());
+              $http.get(error.config.url).then(function(e){
+                toastr.error("An unknown error occurred!");
+                console.trace("Response succeeded, but should have failed", e);
+              }, function(story){ //the request SHOULD fail
+                toastr.error("Story was rejected due to " + story.data.details.note.toLowerCase());
+              });
             } else {
               //couldn't get ahold of the api, put it back
               stories.push(id);
-              console.error("API not available:", errorResponse);
+              console.trace("API not available:", error);
             }
           }
         );
